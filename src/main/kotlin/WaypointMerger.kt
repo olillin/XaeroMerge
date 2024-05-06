@@ -5,39 +5,30 @@ import kotlin.math.pow
 
 object WaypointMerger {
     /**
-     * Appends waypoints in the [world] from [secondaryDirectory] into the [world] of
-     * [primaryDirectory]. Waypoints in [secondaryDirectory] that are closer than
-     * [minDistance] blocks to any waypoint in [primaryDirectory] are ignored.
-     * If [minDistance] is negative no filtering is done.
-     */
-    fun merge(world: String, primaryDirectory: Path, secondaryDirectory: Path, minDistance: Double = 0.1) =
-        merge(world, primaryDirectory, world, secondaryDirectory, minDistance)
-
-    /**
-     * Appends waypoints in the [primaryWorld] from [secondaryDirectory] into the
-     * [secondaryWorld] of [primaryDirectory]. Waypoints in [secondaryDirectory] that
-     * are closer than [minDistance] blocks to any waypoint in [primaryDirectory]
+     * Appends waypoints in the [frontWorld] from [backDirectory] into the
+     * [backWorld] of [frontDirectory]. Waypoints in [backDirectory] that
+     * are closer than [minDistance] blocks to any waypoint in [frontDirectory]
      * are ignored. If [minDistance] is negative no filtering is done.
      *
      * Directory paths should point to a Minecraft game directory.
      */
     fun merge(
-        primaryWorld: String,
-        primaryDirectory: Path,
-        secondaryWorld: String,
-        secondaryDirectory: Path,
+        frontWorld: String,
+        frontDirectory: Path,
+        backWorld: String,
+        backDirectory: Path,
         minDistance: Double = 0.1
     ) {
-        val primaryGameDirectory = GameDirectory(primaryDirectory)
-        val primaryWaypoints = primaryGameDirectory.getWaypoints(primaryWorld)
-        val secondaryGameDirectory = GameDirectory(secondaryDirectory)
-        val secondaryWaypoints = secondaryGameDirectory.getWaypoints(secondaryWorld)
+        val frontGameDirectory = GameDirectory(frontDirectory)
+        val frontWaypoints = frontGameDirectory.getWaypoints(frontWorld)
+        val backGameDirectory = GameDirectory(backDirectory)
+        val backWaypoints = backGameDirectory.getWaypoints(backWorld)
 
-        println(primaryWaypoints)
-        println(secondaryWaypoints)
+        println(frontWaypoints)
+        println(backWaypoints)
 
-        val waypoints: MutableMap<String, List<Waypoint>> = primaryWaypoints.toMutableMap()
-        for ((dim, dimWaypoints) in secondaryWaypoints) {
+        val waypoints: MutableMap<String, List<Waypoint>> = frontWaypoints.toMutableMap()
+        for ((dim, dimWaypoints) in backWaypoints) {
             if (waypoints.containsKey(dim)) {
                 val existingWaypoints = waypoints[dim]!!
                 val newWaypoints: MutableList<Waypoint> = mutableListOf()
@@ -62,6 +53,6 @@ object WaypointMerger {
         }
 
         println(waypoints)
-        primaryGameDirectory.setWaypoints(primaryWorld, waypoints)
+        frontGameDirectory.setWaypoints(frontWorld, waypoints)
     }
 }

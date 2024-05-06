@@ -14,23 +14,27 @@ import java.nio.file.Path
 
 class App: Application() {
 
-    private val selectPrimaryGameDirectoryButton = Button()
-    private val primaryGameDirectoryTextField = TextField().apply {
+    private val selectFrontGameDirectoryButton = Button()
+    private val frontGameDirectoryTextField = TextField().apply {
         prefColumnCount = 60
         textProperty().addListener { _ ->
-            updateWorldSelector()
-        }
-    }
-    private val selectSecondaryGameDirectoryButton = Button()
-    private val secondaryGameDirectoryTextField = TextField().apply {
-        prefColumnCount = 60
-        textProperty().addListener { _ ->
-            updateWorldSelector()
+            updateFrontWorldSelector()
         }
     }
 
-    private val worldSelectorLabel = Label()
-    private val worldSelectorComboBox = ComboBox<String>()
+    private val frontWorldSelectorLabel = Label()
+    private val frontWorldSelectorComboBox = ComboBox<String>()
+
+    private val selectBackGameDirectoryButton = Button()
+    private val backGameDirectoryTextField = TextField().apply {
+        prefColumnCount = 60
+        textProperty().addListener { _ ->
+            updateBackWorldSelector()
+        }
+    }
+
+    private val backWorldSelectorLabel = Label()
+    private val backWorldSelectorComboBox = ComboBox<String>()
 
     private val mergeWaypointsCheckBox = CheckBox()
     private val mergeWorldMapCheckBox = CheckBox()
@@ -40,52 +44,65 @@ class App: Application() {
     override fun start(primaryStage: Stage?) {
         primaryStage?.title = "XaeroMerge"
 
-        selectPrimaryGameDirectoryButton.apply {
-            text = "Game directory to merge into"
+        selectFrontGameDirectoryButton.apply {
+            text = "Front game directory"
             setOnMouseClicked {
                 val chooser = DirectoryChooser()
                 val chosenDirectory: File = chooser.showDialog(primaryStage)
-                primaryGameDirectoryTextField.text = chosenDirectory.absolutePath
+                frontGameDirectoryTextField.text = chosenDirectory.absolutePath
 
-                updateWorldSelector()
+                updateFrontWorldSelector()
             }
         }
-        selectSecondaryGameDirectoryButton.apply {
-            text = "Game directory to merge from"
+        selectBackGameDirectoryButton.apply {
+            text = "Back game directory"
             setOnMouseClicked {
                 val chooser = DirectoryChooser()
                 val chosenDirectory: File = chooser.showDialog(primaryStage)
-                secondaryGameDirectoryTextField.text = chosenDirectory.absolutePath
+                backGameDirectoryTextField.text = chosenDirectory.absolutePath
 
-                updateWorldSelector()
+                updateBackWorldSelector()
             }
         }
 
-        val primarySelector = HBox().apply {
+        val frontSelector = HBox().apply {
             spacing = 4.0
             children.addAll(
-                selectPrimaryGameDirectoryButton,
-                primaryGameDirectoryTextField,
+                selectFrontGameDirectoryButton,
+                frontGameDirectoryTextField,
             )
         }
 
-        val secondarySelector = HBox().apply {
+        val backSelector = HBox().apply {
             spacing = 4.0
             children.addAll(
-                selectSecondaryGameDirectoryButton,
-                secondaryGameDirectoryTextField,
+                selectBackGameDirectoryButton,
+                backGameDirectoryTextField,
             )
         }
 
-        worldSelectorLabel.apply {
-            text = "World"
+
+        frontWorldSelectorLabel.apply {
+            text = "Front world"
         }
 
-        val worldSelector = HBox().apply {
+        val frontWorldSelector = HBox().apply {
             spacing = 4.0
             children.addAll(
-                worldSelectorLabel,
-                worldSelectorComboBox,
+                frontWorldSelectorLabel,
+                frontWorldSelectorComboBox,
+            )
+        }
+
+        backWorldSelectorLabel.apply {
+            text = "Back world"
+        }
+
+        val backWorldSelector = HBox().apply {
+            spacing = 4.0
+            children.addAll(
+                backWorldSelectorLabel,
+                backWorldSelectorComboBox,
             )
         }
 
@@ -110,18 +127,19 @@ class App: Application() {
         mergeButton.apply {
             text = "Merge"
             setOnMouseClicked {
-                val world = worldSelectorComboBox.value
-                val primaryDirectory = Path.of(primaryGameDirectoryTextField.text)
-                val secondaryDirectory = Path.of(secondaryGameDirectoryTextField.text)
+                val frontDirectory = Path.of(frontGameDirectoryTextField.text)
+                val frontWorld = frontWorldSelectorComboBox.value
+                val backDirectory = Path.of(backGameDirectoryTextField.text)
+                val backWorld = backWorldSelectorComboBox.value
 
                 // Merge waypoints
                 if (mergeWaypointsCheckBox.isSelected) {
                     // TODO: Add minDistance slider/input
-                    WaypointMerger.merge(world, primaryDirectory, secondaryDirectory)
+                    WaypointMerger.merge(frontWorld, frontDirectory, backWorld, backDirectory)
                 }
                 // Merge world map
                 if (mergeWorldMapCheckBox.isSelected) {
-                    WorldMapMerger.merge(world, primaryDirectory, secondaryDirectory)
+                    WorldMapMerger.merge(frontWorld, frontDirectory, backWorld, backDirectory)
                 }
             }
         }
@@ -130,9 +148,10 @@ class App: Application() {
             spacing = 8.0
             padding = Insets(8.0)
             children.addAll(
-                primarySelector,
-                secondarySelector,
-                worldSelector,
+                frontSelector,
+                frontWorldSelector,
+                backSelector,
+                backWorldSelector,
                 optionsChecks,
                 mergeButton,
             )
@@ -143,15 +162,23 @@ class App: Application() {
         primaryStage?.show()
     }
 
-    fun updateWorldSelector() {
+    fun updateFrontWorldSelector() {
         try {
-            val primaryDirectory = GameDirectory(Path.of(primaryGameDirectoryTextField.text))
-            val primaryWorlds: Set<String> = primaryDirectory.getWaypointWorlds() intersect primaryDirectory.getWorldMapWorlds()
-            val secondaryDirectory = GameDirectory(Path.of(secondaryGameDirectoryTextField.text))
-            val secondaryWorlds: Set<String> = secondaryDirectory.getWaypointWorlds() intersect secondaryDirectory.getWorldMapWorlds()
+            val directory = GameDirectory(Path.of(frontGameDirectoryTextField.text))
+            val worlds: Set<String> = directory.getWaypointWorlds() intersect directory.getWorldMapWorlds()
 
-            val worlds = primaryWorlds intersect secondaryWorlds
-            worldSelectorComboBox.items.setAll(worlds)
+            frontWorldSelectorComboBox.items.setAll(worlds)
+        } catch (e: InvalidPathException) {
+            return
+        }
+    }
+
+    fun updateBackWorldSelector() {
+        try {
+            val directory = GameDirectory(Path.of(backGameDirectoryTextField.text))
+            val worlds: Set<String> = directory.getWaypointWorlds() intersect directory.getWorldMapWorlds()
+
+            backWorldSelectorComboBox.items.setAll(worlds)
         } catch (e: InvalidPathException) {
             return
         }

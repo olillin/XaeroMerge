@@ -3,7 +3,13 @@ package com.olillin.xaeromerge
 import java.nio.file.Path
 
 object WorldMapMerger {
-    fun merge(world: String, primaryDirectory: Path, secondaryDirectory: Path) {
+    /**
+     * Adds the map data from [backWorld] from [backDirectory] behind the
+     * map of [frontWorld] from [frontDirectory].
+     *
+     * Directory paths should point to a Minecraft game directory.
+     */
+    fun merge(frontWorld: String, frontDirectory: Path, backWorld: String, backDirectory: Path) {
         // TODO: Implement world map merging
     }
 }
