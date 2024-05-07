@@ -1,4 +1,4 @@
-package com.olillin.xaeromerge
+package com.olillin.xaeromerge.com.olillin.xaeromerge
 
 import javafx.application.Application
 import javafx.geometry.Insets

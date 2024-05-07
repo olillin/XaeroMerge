@@ -1,5 +1,6 @@
-package com.olillin.xaeromerge
+package com.olillin.xaeromerge.com.olillin.xaeromerge
 
+import com.github.entropy5.XaeroRegionMerger
 import java.nio.file.Path
 
 object WorldMapMerger {
@@ -10,6 +11,6 @@ object WorldMapMerger {
      * Directory paths should point to a Minecraft game directory.
      */
     fun merge(frontWorld: String, frontDirectory: Path, backWorld: String, backDirectory: Path) {
-        // TODO: Implement world map merging
+        XaeroRegionMerger.main(arrayOf(""))
     }
 }
