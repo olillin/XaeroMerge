@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":jm-to-xaero"))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
@@ -23,7 +24,6 @@ kotlin {
 }
 
 application {
-    mainModule = "com.olillin.xaeromerge.app"
     mainClass = "com.olillin.xaeromerge.AppKt"
 }
 

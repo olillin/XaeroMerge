@@ -3,3 +3,5 @@ plugins {
 }
 rootProject.name = "XaeroMerge"
 
+include("jm-to-xaero")
+project(":jm-to-xaero").projectDir = file("JMtoXaero")

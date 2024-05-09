@@ -1,0 +1,4 @@
+[submodule "JMtoXaero"]
+	path = JMtoXaero
+	url = https://github.com/entropy5/JMtoXaero
+	branch = Region-Scripts
