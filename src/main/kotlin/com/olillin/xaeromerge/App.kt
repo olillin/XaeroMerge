@@ -1,5 +1,6 @@
-package com.olillin.xaeromerge.com.olillin.xaeromerge
+package com.olillin.xaeromerge
 
+import com.olillin.xaeromerge.WorldMapMerger
 import javafx.application.Application
 import javafx.geometry.Insets
 import javafx.scene.Scene

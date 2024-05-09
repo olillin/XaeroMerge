@@ -1,4 +1,4 @@
-package com.olillin.xaeromerge.com.olillin.xaeromerge
+package com.olillin.xaeromerge
 
 import com.github.entropy5.XaeroRegionMerger
 import java.nio.file.Path

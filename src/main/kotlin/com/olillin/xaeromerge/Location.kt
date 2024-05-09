@@ -1,4 +1,4 @@
-package com.olillin.xaeromerge.com.olillin.xaeromerge
+package com.olillin.xaeromerge
 
 import kotlin.math.pow
 import kotlin.math.sqrt

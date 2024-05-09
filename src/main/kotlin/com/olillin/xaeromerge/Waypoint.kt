@@ -1,4 +1,4 @@
-package com.olillin.xaeromerge.com.olillin.xaeromerge
+package com.olillin.xaeromerge
 
 data class Waypoint(
     val name: String,
